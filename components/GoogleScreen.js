@@ -15,7 +15,7 @@ const GoogleScreen = () => {
     }
 
     /*Metode der kaldes for at logge ind med Async! */
-    const _handleGoogleLogin = async () => {
+    const handleGoogleLogin = async () => {
         try {
             /*Returnere et true false med type og en bruger du logger ind med*/
             const {type, accessToken, user} = await Google.logInAsync(googleConfig);
@@ -44,33 +44,28 @@ const GoogleScreen = () => {
         }
     };
     /*Logger ud*/
-    const _handleLogOut = async () => {
+    const handleLogOut = async () => {
         try {
-            const {type} = await Google.logOutAsync({accessToken: googleToken, ...googleConfig});
+            await Google.logOutAsync({accessToken: googleToken, ...googleConfig});
             setGoogleUser(null);
             setGoogleToken('')
-            console.log('dette er min ' + type)
         } catch (e) {
             console.log(e)
         }
     }
 
-    console.log(googleUser,"user")
     return (
-        !googleUser ?
-            (
+        !googleUser ? (
                 <View style={styles.container}>
                     <Text style={styles.paragraph}>
                         Få adgang til din personlige Google profil!
                     </Text>
                     <Button
                         title="Login with Google"
-                        onPress={_handleGoogleLogin}
+                        onPress={handleGoogleLogin}
                     />
-
                 </View>
-            )
-            : (
+            ) : (
                 <View style={styles.container}>
                     <Text style={styles.paragraph}>
                         Hej {googleUser.name} {"\n"}
@@ -78,7 +73,7 @@ const GoogleScreen = () => {
                     </Text>
                     <Button
                         title="Log ud"
-                        onPress={_handleLogOut}
+                        onPress={handleLogOut}
                     />
                 </View>
             )

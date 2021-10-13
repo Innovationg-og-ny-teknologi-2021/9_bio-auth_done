@@ -8,19 +8,13 @@ const FacebookScreen = () => {
     const FacebookAppId = 'App_login';
     const [facebookUser,setFacebookUser] = useState(null)
 
-    async function logIn() {
+     const logIn = async () => {
         try {
             await Facebook.initializeAsync({
                 appId: FacebookID,
                 appName:FacebookAppId
             });
-            const {
-                type,
-                token,
-                expirationDate,
-                permissions,
-                declinedPermissions,
-            } = await Facebook.logInWithReadPermissionsAsync({
+            const { type, token, permissions} = await Facebook.logInWithReadPermissionsAsync({
                 permissions: ['public_profile','name'],
             });
             console.log(permissions,"permisson")
@@ -36,13 +30,14 @@ const FacebookScreen = () => {
             console.log(`Facebook Login Error: ${e}`);
         }
     }
-    console.log(facebookUser)
+
     return(
         <View style={styles.container}>
             <Text style={styles.paragraph}>
-                { !facebookUser ? "Login into your facebook account" : `Hej ${facebookUser.name}`}
+                { facebookUser ? `Hej ${facebookUser.name}` : "Login into your facebook account"}
             </Text>
-            <Button title="Login" onPress={logIn} />
+            {!facebookUser && <Button title="Login" onPress={logIn} />}
+
         </View>
     )
 }

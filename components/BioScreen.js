@@ -4,7 +4,9 @@ import * as LocalAuthentication from 'expo-local-authentication';
 
 const BioScreen = () => {
 
-    // Vi har et par flags i state som bruges
+    // Vi laver et samlet state for Bio-staten, hvor der er nested objecter deri.
+    // Dette gøres for at samle de forskellige states så hvis der skal laves fleres states
+    // så er der en logisk sammenhæng, og nemmmere at sortere
     const [bio,setBio] = useState({
         hasBiometricHardware: false,
         hasBiometricData: false,
@@ -14,9 +16,8 @@ const BioScreen = () => {
 
     // Vi checker om det er muligt at bruge biometrics
     useEffect( () => {
-        if(!bio.hasBiometricHardware || !bio.hasBiometricData){
-            checkBiometricAvailability()
-        }
+        /*Hvis der ikke er bio hardware, eller at man kan modtage bio data så tjek om vi kan*/
+        !bio.hasBiometricHardware || !bio.hasBiometricData && checkBiometricAvailability()
     },[]);
 
     const checkBiometricAvailability = async () => {
@@ -25,25 +26,23 @@ const BioScreen = () => {
         setBio({...bio,hasBiometricHardware,hasBiometricData})
     };
 
-    console.log(bio)
-
     // Vi foretager en biometrisk scanning
     const requestBiometricLogin = async () => {
         try {
-            // For at kunne vise en besked på android, sætter vi dette flag i staten
+            // For at kunne vise en besked på android, sætter vi dette response i staten,
+            // så man kan se vi prøver at requeste bio
             setBio({...bio,isRequestingBiometricLogin:true})
+
             const response = await LocalAuthentication.authenticateAsync({
                 promptMessage: 'log in with faceID/touchID?',
                 fallbackLabel: 'use your passcode',
             });
-            console.log(response,"respose")
-
+            /*Hvis der er en key med succes, så set logged ind til true*/
             if (response.success) {
                 setBio({...bio,isLoggedInBiometic:true})
             } else {
                 Alert.alert('Failure');
             }
-
             // Vi viser en evt fejl som kommer tilbage
             if (response.error) {
                 Alert.alert(response.error);
@@ -59,6 +58,7 @@ const BioScreen = () => {
         LocalAuthentication.cancelAuthenticate();
     };
 
+    /*Logud, så ændrer vi vores isLoggedIn State*/
     const logout =() =>{
         setBio({...bio,isLoggedInBiometic:false})
     }
@@ -86,7 +86,7 @@ const BioScreen = () => {
                 )}
             </View>
         );
-    }else {
+    } else {
         return (
             <View style={styles.container}>
                 <Text style={styles.paragraph}>

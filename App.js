@@ -8,14 +8,16 @@ import BioScreen from "./components/BioScreen";
 import FacebookScreen from "./components/FacebookScreen";
 import GoogleScreen from "./components/GoogleScreen";
 
-const Tab = createBottomTabNavigator();
 
 export default function App() {
 
+  const Tab = createBottomTabNavigator();
+    /*Vores tab navigator*/
   return (
       <NavigationContainer>
           <Tab.Navigator>
               <Tab.Screen name={"Bio"} component={BioScreen} options={{tabBarIcon:({tintColor}) =>(<Entypo name="fingerprint" size={24} color={tintColor} />)}} />
+              {/*Hvis det er Iphone, så vis Facebook tab'en*/}
               {Platform.OS === 'ios' && <Tab.Screen name={"Facebook"} component={FacebookScreen} options={{tabBarIcon:({tintColor}) =>(<Entypo name="facebook" size={24} color={tintColor} />)}} />}
               <Tab.Screen name={"Google"} component={GoogleScreen} options={{tabBarIcon:({tintColor}) =>(<AntDesign name="google" size={24} color={tintColor} />)}} />
           </Tab.Navigator>
@@ -23,11 +25,3 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
